@@ -26,7 +26,7 @@ jobs:
       run: dotnet test --no-restore --verbosity normal
       
     - name: Pack
-      run: dotnet pack MathCore.WinAPI\MathCore.WinAPI.csproj -c Release -v m --no-restore
+      run: dotnet pack MathCore.WinAPI/MathCore.WinAPI.csproj -c Release -v m --no-restore
 
     - name: Publish
-      run: dotnet nuget push MathCore\bin\Release\*.nupkg -k ${{ secrets.NUGETAPIKEY }} --skip-duplicate -s https://api.nuget.org/v3/index.json
+      run: dotnet nuget push MathCore.WinAPI/bin/Release/*.nupkg -k ${{ secrets.NUGETAPIKEY }} --skip-duplicate -s https://api.nuget.org/v3/index.json
