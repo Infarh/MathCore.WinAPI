@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>0.0.0</Version>
+    <Version>0.0.1</Version>
     <PackageReleaseNotes>
-      Создан новый репозиторий
+      Добавлен коментарий
     </PackageReleaseNotes>
   </PropertyGroup>
 
@@ -25,6 +25,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>MathCore.WinAPI.xml</DocumentationFile>
+    <NoWarn>1701;1702; 1591</NoWarn>
   </PropertyGroup>
 
 </Project>

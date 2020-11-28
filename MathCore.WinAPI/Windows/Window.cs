@@ -32,8 +32,10 @@ namespace MathCore.WinAPI.Windows
             return result.ToArray();
         }
 
+        /// <summary>Идентификатор окна</summary>
         public IntPtr Handle { get; }
 
+        /// <summary>Текст (заголовок) окна</summary>
         public string Text
         {
             get => GetWindowText();
