@@ -1,49 +1,11 @@
-﻿using System;
-using System.Diagnostics;
+﻿
 
-using MathCore.WinAPI.Windows;
+var paint = Window.Find(w => w.Text.Contains("paint.net")).First();
 
-namespace ConsoleTests
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            var notepad_process = Process.Start("notepad");
+var img = paint.GetImage();
 
-            Console.WriteLine("Ждём...");
-            Console.ReadLine();
+img.Save("paint.bmp");
 
-            //var notepad = Window.Find(w => w.Text.EndsWith("Notepad++"));
-            //foreach (var w in notepad)
-            //    w.Text = "QWE";
+var img_file = new FileInfo("paint.bmp");
 
-
-            var window = new Window(notepad_process.MainWindowHandle);
-            Console.WriteLine("Текст окна = {0}", window.Text);
-            Console.WriteLine("Координаты окна = {0}", window.Rectangle);
-
-            //window.Text = "Hello World!";
-
-            //for (var x = window.X; x < 1692; x += 10)
-            //{
-            //    window.X = x;
-            //    Thread.Sleep(100);
-            //}
-
-            //Console.ReadLine();
-            //Console.WriteLine("Закрыть!");
-            //window.Close();
-
-            Console.WriteLine("Поверх всех окон.");
-            window.SetTopMost();
-            Console.ReadLine();
-            Console.WriteLine("Не поверх всех окон.");
-
-            Console.WriteLine("Завершено.");
-            Console.ReadLine();
-
-            //notepad_process.CloseMainWindow();
-        }
-    }
-}
+img_file.Execute();

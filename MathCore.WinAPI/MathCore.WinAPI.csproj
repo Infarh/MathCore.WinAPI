@@ -23,11 +23,18 @@
     <PackageProjectUrl>https://github.com/Infarh/MathCore.WinAPI</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Infarh/MathCore.WinAPI.git</RepositoryUrl>
     <PackageTags>API;WinAPI;Windows</PackageTags>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <DocumentationFile>$(MSBuildProjectName.Replace(" ", "_")).xml</DocumentationFile>
     <NoWarn>1701;1702; 1591</NoWarn>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Win32.SystemEvents" Version="7.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+    <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
+  </ItemGroup>
 
 </Project>

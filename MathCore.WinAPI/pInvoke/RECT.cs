@@ -25,6 +25,8 @@ namespace MathCore.WinAPI.pInvoke
 
         public POINT Location => new POINT(Left, Top);
 
+        public Point Point => new(Left, Top);
+
         // Handy method for converting to a System.Drawing.Rectangle
         public Rectangle ToRectangle() => Rectangle.FromLTRB(Left, Top, Right, Bottom);
 
@@ -38,6 +40,13 @@ namespace MathCore.WinAPI.pInvoke
             Left ^ ((Top << 13) | (Top >> 0x13))
             ^ ((Width << 0x1a) | (Width >> 6))
             ^ ((Height << 7) | (Height >> 0x19));
+
+        public override string ToString() => $"{Left},{Top},{Right},{Bottom}({Width}x{Height})";
+
+        public void Deconstruct(out int Left, out int Top, out int Right, out int Bottom) =>
+            (Left, Top, Right, Bottom) = (this.Left, this.Top, this.Right, this.Bottom);
+
+        public void Deconstruct(out int Width, out int Height) => (Width, Height) = (this.Width, this.Height);
 
         #region Operator overloads
 

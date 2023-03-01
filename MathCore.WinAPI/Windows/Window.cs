@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -46,15 +48,17 @@ namespace MathCore.WinAPI.Windows
             }
         }
 
+        public static RECT GetRect(nint Handle)
+        {
+            var rect = new RECT();
+            if (!User32.GetWindowRect(Handle, ref rect))
+                ThrowLastWin32Error();
+            return rect;
+        }
+
         public Rectangle Rectangle
         {
-            get
-            {
-                var rect = new RECT();
-                if (!User32.GetWindowRect(Handle, ref rect))
-                    ThrowLastWin32Error();
-                return rect;
-            }
+            get => GetRect(Handle);
             set
             {
                 if (!User32.MoveWindow(Handle, value.Left, value.Top, value.Width, value.Height, bRepaint: true))
@@ -127,6 +131,47 @@ namespace MathCore.WinAPI.Windows
                 0, 0, 0, 0,
                 SetWindowPosFlags.IgnoreMove | SetWindowPosFlags.IgnoreResize);
 
+        //public static Image GetImage(nint hwnd)
+        //{
+        //    var rect = GetRect(hwnd);
+
+        //    var bmp = new Bitmap(rect.Width, rect.Height, PixelFormat.Format32bppArgb);
+        //    using var g = Graphics.FromImage(bmp);
+        //    g.CopyFromScreen(rect.Left, rect.Top, 0, 0, rect.Size, CopyPixelOperation.SourceCopy);
+
+        //    return bmp;
+        //}
+
+        public static Image GetImage(nint handle)
+        {
+            IntPtr hdcSrc = User32.GetWindowDC(handle);
+
+            var (width, height) = GetRect(handle);
+
+            var hdcDest = Gdi32.CreateCompatibleDC(hdcSrc);
+
+            var hBitmap = Gdi32.CreateCompatibleBitmap(hdcSrc, width, height);
+
+            var hOld = Gdi32.SelectObject(hdcDest, hBitmap);
+
+            Gdi32.BitBlt(hdcDest, 0, 0, width, height, hdcSrc, 0, 0, Gdi32.SRCCOPY);
+
+            Gdi32.SelectObject(hdcDest, hOld);
+
+            Gdi32.DeleteDC(hdcDest);
+            User32.ReleaseDC(handle, hdcSrc);
+
+            var img = Image.FromHbitmap(hBitmap);
+
+            Gdi32.DeleteObject(hBitmap);
+
+            return img;
+        }
+
+        public Image GetImage() => GetImage(Handle);
+
         public bool Close() => SendMessage(WM.CLOSE) == IntPtr.Zero;
+
+        public override string ToString() => $"{Text}[hwnd:{Handle}]";
     }
 }
