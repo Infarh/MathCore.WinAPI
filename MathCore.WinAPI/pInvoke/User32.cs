@@ -39,8 +39,11 @@ public static class User32
 
     public enum MonitorInfo : uint
     {
+        /// <summary>IntPtr.Zero в случае неудачи</summary>
         DEFAULTTONULL,
+        /// <summary>Дескриптор главного монитора в случае неудачи</summary>
         DEFAULTTOPRIMARY,
+        /// <summary>Дескриптор ближайшего монитора в случае неудачи</summary>
         DEFAULTTONEAREST,
     }
 
@@ -190,14 +193,14 @@ public static class User32
     /// <param name="lParam">Младший параметр</param>
     /// <returns></returns>
     [DllImport(FileName, CharSet = CharSet.Auto, SetLastError = false)]
-    public static extern nint SendMessage(IntPtr hWnd, WM Msg, IntPtr wParam, IntPtr lParam);
+    public static extern nint SendMessage(nint hWnd, WM Msg, nint wParam, nint lParam);
 
     #endregion
 
     #region PostMessage
 
     [DllImport(FileName, CharSet = CharSet.Auto, SetLastError = true)]
-    public static extern nint PostMessage(IntPtr hWnd, WM Msg, IntPtr wParam, IntPtr lParam);
+    public static extern nint PostMessage(nint hWnd, WM Msg, nint wParam, nint lParam);
 
     #endregion
 
@@ -205,7 +208,7 @@ public static class User32
     /// <param name="hWnd">Дескриптор окна</param>
     /// <returns>Число символов текста окна</returns>
     [DllImport(FileName, SetLastError = true, CharSet = CharSet.Auto)]
-    public static extern int GetWindowTextLength(IntPtr hWnd);
+    public static extern int GetWindowTextLength(nint hWnd);
 
     /// <summary>Получить текст окна</summary>
     /// <param name="hWnd">Дескриптор окна</param>
@@ -213,20 +216,20 @@ public static class User32
     /// <param name="nMaxCount">Число символов</param>
     /// <returns>Текст окна</returns>
     [DllImport(FileName, CharSet = CharSet.Auto, SetLastError = true)]
-    public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, uint nMaxCount);
+    public static extern int GetWindowText(nint hWnd, StringBuilder lpString, uint nMaxCount);
 
     [DllImport(FileName, SetLastError = true)]
-    public static extern int EnumWindows(EnumWindowProc hWnd, IntPtr lParam);
+    public static extern int EnumWindows(EnumWindowProc hWnd, nint lParam);
 
     /// <summary>Установить текст окна</summary>
     /// <param name="hWnd">Дескриптор окна</param>
     /// <param name="lpString">Текст окна</param>
     /// <returns>Истина, если удалось</returns>
     [DllImport(FileName, SetLastError = true)]
-    public static extern bool SetWindowText(IntPtr hWnd, string lpString);
+    public static extern bool SetWindowText(nint hWnd, string lpString);
 
     [DllImport(FileName, SetLastError = true)]
-    public static extern bool GetWindowRect(IntPtr hWnd, ref RECT lpRect);
+    public static extern bool GetWindowRect(nint hWnd, ref RECT lpRect);
 
     /// <summary>
     /// Функция MoveWindow изменяет позицию и габариты определяемого окна. Для окна верх-него уровня, позиция и 
@@ -254,17 +257,17 @@ public static class User32
     /// WM_MOVE, WM_SIZE и WM_NCCALCSIZE.</remarks>
 
     [DllImport(FileName, SetLastError = true)]
-    public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
+    public static extern bool MoveWindow(nint hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
 
     [DllImport(FileName, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, SetWindowPosFlags uFlags);
+    public static extern bool SetWindowPos(nint hWnd, nint hWndInsertAfter, int X, int Y, int cx, int cy, SetWindowPosFlags uFlags);
 
     [DllImport(FileName, EntryPoint = "ReleaseDC")]
-    public static extern nint ReleaseDC(IntPtr hWnd, IntPtr hDc);
+    public static extern nint ReleaseDC(nint hWnd, nint hDc);
 
     [DllImport(FileName, EntryPoint = "GetWindowDC")]
-    public static extern nint GetWindowDC(IntPtr hWnd);
+    public static extern nint GetWindowDC(nint hWnd);
 
     [DllImport(FileName)]
     public static extern nint GetDesktopWindow();
@@ -284,13 +287,20 @@ public static class User32
     [DllImport(FileName)]
     public static extern nint MonitorFromRect([In] ref RECT lprc, MonitorInfo dwFlags);
 
+    /// <summary>Получить дескриптор монитора для указанного дескриптора окна</summary>
+    /// <param name="hwnd">Дескриптор окна</param>
+    /// <param name="dwFlags">Варианты результата в случае неудачи</param>
+    /// <returns>Дескриптор монитора</returns>
     [DllImport(FileName)]
-    public static extern nint MonitorFromWindow(nint hwnd, MonitorInfo dwFlags);
+    public static extern nint MonitorFromWindow(nint hwnd, MonitorInfo dwFlags = MonitorInfo.DEFAULTTONULL);
 
     [DllImport(FileName, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool SystemParametersInfo(SPI uiAction, uint uiParam, ref RECT pvParam, uint fWinIni);
 
     [DllImport(FileName)]
-    public static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
+    public static extern bool GetClientRect(nint hWnd, out RECT lpRect);
+
+    [DllImport(FileName)]
+    public static extern nint MonitorFromWindow(nint hwnd, uint dwFlags);
 }

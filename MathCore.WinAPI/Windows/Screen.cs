@@ -46,7 +46,15 @@ public class Screen
     /// <summary>Счётчик изменений текущего рабочего стола</summary>
     private int _CurrentDesktopChangedCount = -1;
 
-    internal Screen(nint monitor, Gdi32.HDC hdc = default)
+    public nint Handle => _hMonitor;
+
+    public static double GetScale(nint MonitorHandle) => SHCore.GetScalePercentForMonitor(MonitorHandle, out var percent) == IntPtr.Zero
+        ? percent * 0.01
+        : throw new InvalidOperationException("Ошибка WinAPI вызова функции GetScaleFactorForMonitor");
+
+    public double Scale => GetScale(_hMonitor);
+
+    public Screen(nint monitor, Gdi32.HDC hdc = default)
     {
         var screen_dc = hdc;
 

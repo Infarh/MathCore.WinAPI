@@ -164,7 +164,43 @@ public class Window
         return img;
     }
 
+    public static Image GetImage(nint handle, Rectangle ImageRect)
+    {
+        IntPtr hdcSrc = User32.GetWindowDC(handle);
+
+        var (width, height) = (ImageRect.Width, ImageRect.Height);
+
+        var hdcDest = Gdi32.CreateCompatibleDC(hdcSrc);
+
+        var hBitmap = Gdi32.CreateCompatibleBitmap(hdcSrc, width, height);
+
+        var hOld = Gdi32.SelectObject(hdcDest, hBitmap);
+
+        Gdi32.BitBlt(hdcDest, 0, 0, width, height, hdcSrc, ImageRect.Left, ImageRect.Top, Gdi32.SRCCOPY);
+
+        Gdi32.SelectObject(hdcDest, hOld);
+
+        Gdi32.DeleteDC(hdcDest);
+        User32.ReleaseDC(handle, hdcSrc);
+
+        var img = Image.FromHbitmap(hBitmap);
+
+        Gdi32.DeleteObject(hBitmap);
+
+        return img;
+    }
+
     public Image GetImage() => GetImage(Handle);
+
+    public static IntPtr GetScreenPtr(nint Handle) => User32.MonitorFromWindow(Handle);
+
+    public static Screen? GetScreen(nint Handle)
+    {
+        var screen_handle = GetScreenPtr(Handle);
+        return screen_handle == IntPtr.Zero 
+            ? null 
+            : new(screen_handle);
+    }
 
     public bool Close() => SendMessage(WM.CLOSE) == IntPtr.Zero;
 
