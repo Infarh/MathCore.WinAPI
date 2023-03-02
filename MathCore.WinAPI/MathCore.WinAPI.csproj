@@ -8,10 +8,15 @@
     <AssemblyOriginatorKeyFile>MathCore.WinAPI.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
+  <ItemGroup>
+    <SupportedPlatform Include="windows" />
+  </ItemGroup>
+
   <PropertyGroup>
-    <Version>0.0.1</Version>
+    <Version>0.0.2</Version>
     <PackageReleaseNotes>
-      Добавлен коментарий
+      Добавлена возможность получить скриншот окна, или области окна
+      Добавлена возможность получения информации о рабочих столах системы
     </PackageReleaseNotes>
   </PropertyGroup>
 
@@ -23,11 +28,22 @@
     <PackageProjectUrl>https://github.com/Infarh/MathCore.WinAPI</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Infarh/MathCore.WinAPI.git</RepositoryUrl>
     <PackageTags>API;WinAPI;Windows</PackageTags>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <DocumentationFile>$(MSBuildProjectName.Replace(" ", "_")).xml</DocumentationFile>
     <NoWarn>1701;1702; 1591</NoWarn>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Win32.SystemEvents" Version="7.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+    <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="MathCore.WinAPI.Infrastructure.Extensions" />
+  </ItemGroup>
 
 </Project>
