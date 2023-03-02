@@ -13,9 +13,10 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <Version>0.0.1</Version>
+    <Version>0.0.2</Version>
     <PackageReleaseNotes>
-      Добавлен коментарий
+      Добавлена возможность получить скриншот окна, или области окна
+      Добавлена возможность получения информации о рабочих столах системы
     </PackageReleaseNotes>
   </PropertyGroup>
 

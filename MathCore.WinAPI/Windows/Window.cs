@@ -67,6 +67,7 @@ public class Window
 
     /// <summary>Положение левого верхнего угла окна по горизонтали</summary>
     public int X { get => Location.X; set => Location = new Point(value, Location.Y); }
+
     /// <summary>Положение левого верхнего угла окна по вертикали</summary>
     public int Y { get => Location.Y; set => Location = new Point(Location.X, value); }
 
@@ -75,6 +76,7 @@ public class Window
 
     /// <summary>ШИрина окна</summary>
     public int Width { get => Rectangle.Width; set => Size = new Size(value, Height); }
+
     /// <summary>Высота окна</summary>
     public int Height { get => Rectangle.Height; set => Size = new Size(Width, value); }
 
@@ -126,17 +128,6 @@ public class Window
             InsertAfterEnumHWND.TopMost,
             0, 0, 0, 0,
             SetWindowPosFlags.IgnoreMove | SetWindowPosFlags.IgnoreResize);
-
-    //public static Image GetImage(nint hwnd)
-    //{
-    //    var rect = GetRect(hwnd);
-
-    //    var bmp = new Bitmap(rect.Width, rect.Height, PixelFormat.Format32bppArgb);
-    //    using var g = Graphics.FromImage(bmp);
-    //    g.CopyFromScreen(rect.Left, rect.Top, 0, 0, rect.Size, CopyPixelOperation.SourceCopy);
-
-    //    return bmp;
-    //}
 
     public static Bitmap GetImage(nint handle)
     {
@@ -196,6 +187,9 @@ public class Window
 
     public static IntPtr GetScreenPtr(nint Handle) => User32.MonitorFromWindow(Handle);
 
+    /// <summary>Получить рабочий стол, которому принадлежит окно c указанным идентификатором</summary>
+    /// <param name="Handle">Идентификатор проверяемого окна</param>
+    /// <returns>Рабочий стол с указанным окном</returns>
     public static Screen? GetScreen(nint Handle)
     {
         var screen_handle = GetScreenPtr(Handle);
@@ -204,6 +198,8 @@ public class Window
             : new(screen_handle);
     }
 
+    /// <summary>Закрыть окно</summary>
+    /// <returns>Истина, если окно закрыто успешно</returns>
     public bool Close() => SendMessage(WM.CLOSE) == IntPtr.Zero;
 
     public override string ToString() => $"{Text}[hwnd:{Handle}]";
