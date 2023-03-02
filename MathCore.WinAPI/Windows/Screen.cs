@@ -54,11 +54,11 @@ public class Screen
 
     public double Scale => GetScale(_hMonitor);
 
-    public Screen(nint monitor, Gdi32.HDC hdc = default)
+    public Screen(nint ScreenHandle, Gdi32.HDC hdc = default)
     {
         var screen_dc = hdc;
 
-        if (!__MultiMonitorSupport || monitor == __PrimaryMonitor)
+        if (!__MultiMonitorSupport || ScreenHandle == __PrimaryMonitor)
         {
             _Bounds = SystemInformation.VirtualScreen;
             _Primary = true;
@@ -69,7 +69,7 @@ public class Screen
             // Система с множеством мониторов
             var info = new User32.MonitorInfoExW();
 
-            User32.GetMonitorInfo(monitor, ref info);
+            User32.GetMonitorInfo(ScreenHandle, ref info);
 
             (_Bounds, _Primary, _DeviceName) = info;
 
@@ -77,7 +77,7 @@ public class Screen
                 screen_dc = Gdi32.CreateDC(_DeviceName, null, null, IntPtr.Zero);
         }
 
-        _hMonitor = monitor;
+        _hMonitor = ScreenHandle;
 
         _BitDepth = Gdi32.GetDeviceCaps(screen_dc, Gdi32.DeviceCapability.BITSPIXEL);
         _BitDepth *= Gdi32.GetDeviceCaps(screen_dc, Gdi32.DeviceCapability.PLANES);
@@ -235,6 +235,23 @@ public class Screen
         if (e.Category == UserPreferenceCategory.Desktop)
             Interlocked.Increment(ref __DesktopChangedCount);
     }
+
+    public static Image GetImage(nint ScreenHandle)
+    {
+        var info = new User32.MonitorInfoExW();
+        User32.GetMonitorInfo(ScreenHandle, ref info);
+
+        var bounds = info.rcMonitor;
+
+        var img = new Bitmap(bounds.Width, bounds.Height);
+
+        using Graphics g = Graphics.FromImage(img);
+        g.CopyFromScreen(bounds.Left, bounds.Top, 0, 0, img.Size);
+
+        return img;
+    }
+
+    public Image GetImage() => GetImage(_hMonitor);
 
     public override string ToString() =>
         new StringBuilder(128)

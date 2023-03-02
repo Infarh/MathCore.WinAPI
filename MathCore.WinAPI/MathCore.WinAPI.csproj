@@ -8,6 +8,10 @@
     <AssemblyOriginatorKeyFile>MathCore.WinAPI.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
+  <ItemGroup>
+    <SupportedPlatform Include="windows" />
+  </ItemGroup>
+
   <PropertyGroup>
     <Version>0.0.1</Version>
     <PackageReleaseNotes>
@@ -35,6 +39,10 @@
     <PackageReference Include="Microsoft.Win32.SystemEvents" Version="7.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
     <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="MathCore.WinAPI.Infrastructure.Extensions" />
   </ItemGroup>
 
 </Project>
