@@ -12,9 +12,9 @@ var monitor_handle = monitor.Handle;
 
 var pp = SHCore.GetScalePercentForMonitor(monitor_handle, out var scale);
 
-var paint = Window.Find(w => w.Text.Contains("paint.net")).First();
+var paint = Window.Find(w => w.Text.Contains("paint", StringComparison.OrdinalIgnoreCase)).First();
 
-var bmp = (Bitmap)paint.GetImage(new(895, 793, 265, 252));
+var bmp = (Bitmap)paint.GetImage(/*new(895, 793, 265, 252)*/);
 
 bmp.Save("paint.bmp");
 
@@ -45,6 +45,16 @@ using(var f_bmp = new FBitmap(bmp, ImageLockMode.ReadOnly))
 var img_file = new FileInfo("paint.bmp");
 
 img_file.Execute();
+
+Console.ReadLine();
+
+var bmp2 = (Bitmap)paint.GetImage(/*new(895, 793, 265, 252)*/);
+
+bmp2.Save("paint2.bmp");
+
+var img2_file = new FileInfo("paint2.bmp");
+img2_file.Execute();
+
 
 public unsafe class FBitmap : IDisposable
 {
