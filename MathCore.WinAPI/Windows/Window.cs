@@ -44,6 +44,18 @@ public class Window
         }
     }
 
+    public string ClassName => User32.GetClassName(Handle);
+
+    private nint? _ParentHandle;
+    private Window? _Parent;
+
+    public Window? Parent => _ParentHandle switch
+    {
+        null => (_ParentHandle = User32.GetParent(Handle)) == default ? null : _Parent = new((nint)_ParentHandle),
+        default(nint) => null,
+        _ => _Parent
+    };
+
     public static RECT GetRect(nint Handle)
     {
         var rect = new RECT();
@@ -79,6 +91,8 @@ public class Window
 
     /// <summary>Высота окна</summary>
     public int Height { get => Rectangle.Height; set => Size = new Size(Width, value); }
+
+    public bool IsWindowVisible => User32.IsWindowVisible(Handle);
 
     public Window(IntPtr Handle) => this.Handle = Handle;
 
@@ -197,6 +211,8 @@ public class Window
             ? null 
             : new(screen_handle);
     }
+
+    public void SwitchToThisWindow(bool IsAltTab = false) => User32.SwitchToThisWindow(Handle, IsAltTab);
 
     /// <summary>Закрыть окно</summary>
     /// <returns>Истина, если окно закрыто успешно</returns>

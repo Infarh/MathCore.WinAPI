@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.ComponentModel;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -218,6 +219,34 @@ public static class User32
     [DllImport(FileName, CharSet = CharSet.Auto, SetLastError = true)]
     public static extern int GetWindowText(nint hWnd, StringBuilder lpString, uint nMaxCount);
 
+    [DllImport(FileName, CharSet = CharSet.Auto, SetLastError = true)]
+    public static extern int GetClassName(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+
+    [DllImport(FileName, CharSet = CharSet.Auto, SetLastError = true)]
+    public static extern int GetClassNameW(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+
+    public static string GetClassName(IntPtr hWnd)
+    {
+        var class_name = String.Empty;
+        var length = 10; // deliberately small so you can 
+                         // see the algorithm iterate several times. 
+        var sb = new StringBuilder(length);
+        while (length < 1024)
+        {
+            var received_length = GetClassNameW(hWnd, sb, length);
+            if (received_length == 0)
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+            else if (received_length < length - 1) // -1 for null terminator
+            {
+                class_name = sb.ToString();
+                break;
+            }
+            else 
+                length *= 2;
+        }
+        return class_name;
+    }
+
     [DllImport(FileName, SetLastError = true)]
     public static extern int EnumWindows(EnumWindowProc hWnd, nint lParam);
 
@@ -303,4 +332,13 @@ public static class User32
 
     [DllImport(FileName)]
     public static extern nint MonitorFromWindow(nint hwnd, uint dwFlags);
+
+    [DllImport(FileName)]
+    public static extern nint GetParent(nint hWnd);
+
+    [DllImport(FileName)]
+    public static extern bool IsWindowVisible(IntPtr hWnd);
+
+    [DllImport(FileName)]
+    public static extern void SwitchToThisWindow(IntPtr hWnd, bool IsAltTab);
 }
