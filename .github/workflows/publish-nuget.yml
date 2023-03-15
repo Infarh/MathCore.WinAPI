@@ -1,4 +1,4 @@
-name: .NET Core
+name: Publish
 
 on:
   push:
@@ -42,7 +42,7 @@ jobs:
       run: dotnet test -c Release --no-build -v n
       
     - name: Pack
-      run: dotnet pack MathCore.WinAPI\MathCore.WinAPI.csproj --no-build -c Release -v q -o ${{ github.workspace }}/ReleasePack --include-symbols
+      run: dotnet pack MathCore.WinAPI --no-build -c Release -v q -o ${{ github.workspace }}/ReleasePack --include-symbols
       
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3.1.1
