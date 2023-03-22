@@ -15,7 +15,7 @@ public static class Gdi32
 
         public HDC(nint handle) => Handle = handle;
 
-        public bool IsNull => Handle == nint.Zero;
+        public bool IsNull => Handle == IntPtr.Zero;
 
         public static implicit operator nint(HDC hdc) => hdc.Handle;
 
@@ -40,7 +40,7 @@ public static class Gdi32
 
         public HGDIOBJ(nint handle) => Handle = handle;
 
-        public bool IsNull => Handle == nint.Zero;
+        public bool IsNull => Handle == IntPtr.Zero;
 
         public static explicit operator nint(HGDIOBJ hgdiobj) => hgdiobj.Handle;
 
