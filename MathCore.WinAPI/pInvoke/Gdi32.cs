@@ -15,7 +15,7 @@ public static class Gdi32
 
         public HDC(nint handle) => Handle = handle;
 
-        public bool IsNull => Handle == IntPtr.Zero;
+        public bool IsNull => Handle == nint.Zero;
 
         public static implicit operator nint(HDC hdc) => hdc.Handle;
 
@@ -40,7 +40,7 @@ public static class Gdi32
 
         public HGDIOBJ(nint handle) => Handle = handle;
 
-        public bool IsNull => Handle == IntPtr.Zero;
+        public bool IsNull => Handle == nint.Zero;
 
         public static explicit operator nint(HGDIOBJ hgdiobj) => hgdiobj.Handle;
 
@@ -95,23 +95,30 @@ public static class Gdi32
     public static extern int GetDeviceCaps(HDC hdc, DeviceCapability nIndex);
 
     [DllImport(FileName)]
+    [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool DeleteDC(HDC hdc);
 
     [DllImport(FileName)]
-    public static extern IntPtr CreateCompatibleDC(IntPtr hDC);
+    public static extern nint CreateCompatibleDC(nint hDC);
 
     [DllImport(FileName)]
-    public static extern IntPtr CreateCompatibleBitmap(IntPtr hDC, int nWidth, int nHeight);
+    public static extern nint CreateCompatibleBitmap(nint hDC, int nWidth, int nHeight);
 
     [DllImport(FileName)]
-    public static extern IntPtr SelectObject(IntPtr hDC, IntPtr hObject);
+    public static extern nint SelectObject(nint hDC, nint hObject);
 
     [DllImport(FileName)]
-    public static extern bool DeleteObject(IntPtr hObject);
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool DeleteObject(nint hObject);
 
     [DllImport(FileName)]
-    public static extern bool BitBlt(IntPtr hDestDC, int X, int Y, int nWidth, int nHeight, IntPtr hSrcDC, int SrcX, int SrcY, int Rop);
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool BitBlt(nint hDestDC, int X, int Y, int nWidth, int nHeight, nint hSrcDC, int SrcX, int SrcY, int Rop);
 
     [DllImport(FileName)]
-    public static extern IntPtr DeleteDC(IntPtr hDC);
+    public static extern nint DeleteDC(nint hDC);
+
+    [DllImport(FileName)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool GdiFlush();
 }
