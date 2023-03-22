@@ -40,7 +40,7 @@ public static class User32
 
     public enum MonitorInfo : uint
     {
-        /// <summary>IntPtr.Zero в случае неудачи</summary>
+        /// <summary>nint.Zero в случае неудачи</summary>
         DEFAULTTONULL,
         /// <summary>Дескриптор главного монитора в случае неудачи</summary>
         DEFAULTTOPRIMARY,
@@ -220,12 +220,12 @@ public static class User32
     public static extern int GetWindowText(nint hWnd, StringBuilder lpString, uint nMaxCount);
 
     [DllImport(FileName, CharSet = CharSet.Auto, SetLastError = true)]
-    public static extern int GetClassName(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+    public static extern int GetClassName(nint hWnd, StringBuilder lpString, int nMaxCount);
 
     [DllImport(FileName, CharSet = CharSet.Auto, SetLastError = true)]
-    public static extern int GetClassNameW(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+    public static extern int GetClassNameW(nint hWnd, StringBuilder lpString, int nMaxCount);
 
-    public static string GetClassName(IntPtr hWnd)
+    public static string GetClassName(nint hWnd)
     {
         var class_name = String.Empty;
         var length = 10; // deliberately small so you can 
@@ -255,9 +255,11 @@ public static class User32
     /// <param name="lpString">Текст окна</param>
     /// <returns>Истина, если удалось</returns>
     [DllImport(FileName, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool SetWindowText(nint hWnd, string lpString);
 
     [DllImport(FileName, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool GetWindowRect(nint hWnd, ref RECT lpRect);
 
     /// <summary>
@@ -286,6 +288,7 @@ public static class User32
     /// WM_MOVE, WM_SIZE и WM_NCCALCSIZE.</remarks>
 
     [DllImport(FileName, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool MoveWindow(nint hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
 
     [DllImport(FileName, SetLastError = true)]
@@ -304,10 +307,11 @@ public static class User32
     [DllImport(FileName)]
     public static extern int GetSystemMetrics(SystemMetric nIndex);
 
-    [DllImport("User32.dll")]
+    [DllImport(FileName)]
     public static extern bool GetMonitorInfo(nint hMonitor, [In, Out] ref MonitorInfoExW lpmi);
 
     [DllImport(FileName)]
+    [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool EnumDisplayMonitors(nint hdc, nint lprcClip, MonitorEnumerator lpfnEnum, nint dwData);
 
     [DllImport(FileName)]
@@ -328,6 +332,7 @@ public static class User32
     public static extern bool SystemParametersInfo(SPI uiAction, uint uiParam, ref RECT pvParam, uint fWinIni);
 
     [DllImport(FileName)]
+    [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool GetClientRect(nint hWnd, out RECT lpRect);
 
     [DllImport(FileName)]
@@ -337,8 +342,82 @@ public static class User32
     public static extern nint GetParent(nint hWnd);
 
     [DllImport(FileName)]
-    public static extern bool IsWindowVisible(IntPtr hWnd);
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool IsWindowVisible(nint hWnd);
 
     [DllImport(FileName)]
-    public static extern void SwitchToThisWindow(IntPtr hWnd, bool IsAltTab);
+    public static extern void SwitchToThisWindow(nint hWnd, bool IsAltTab);
+
+    [DllImport(FileName, ExactSpelling = true, CharSet = CharSet.Auto)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool SetForegroundWindow(nint hWnd);
+
+    [DllImport(FileName)]
+    public static extern nint GetForegroundWindow();
+
+
+    [DllImport(FileName)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool GetCursorInfo(out CursorInfo Info);
+
+    [DllImport(FileName)]
+    public static extern nint SetCursor(nint handle);
+
+    [DllImport(FileName)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool ClientToScreen(nint hwnd, ref POINT lpPoint);
+
+    [DllImport(FileName)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool SetCursorPos(int x, int y);
+
+    [DllImport(FileName, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool MessageBeep(MessageBeepType uType);
+
+    [DllImport(FileName)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool PrintWindow(nint hWnd, nint hdcBlt, int nFlags);
+
+    [DllImport(FileName)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool UpdateWindow(nint hWnd);
+
+    public static nint SetWindowLongPtr(nint hWnd, int nIndex, IntPtr dwNewLong) => IntPtr.Size == 8
+            ? SetWindowLongPtr64(hWnd, nIndex, dwNewLong)
+            : new IntPtr(SetWindowLong32(hWnd, nIndex, dwNewLong.ToInt32()));
+
+    public static nint SetWindowLongPtr(HandleRef hWnd, int nIndex, IntPtr dwNewLong) => IntPtr.Size == 8
+            ? SetWindowLongPtr64(hWnd, nIndex, dwNewLong)
+            : new IntPtr(SetWindowLong32(hWnd, nIndex, dwNewLong.ToInt32()));
+
+    [DllImport(FileName, EntryPoint = "SetWindowLong")]
+    public static extern int SetWindowLong32(nint hWnd, int nIndex, int dwNewLong);
+
+    [DllImport(FileName, EntryPoint = "SetWindowLong")]
+    public static extern int SetWindowLong32(HandleRef hWnd, int nIndex, int dwNewLong);
+
+    [DllImport(FileName, EntryPoint = "SetWindowLongPtr")]
+    public static extern nint SetWindowLongPtr64(nint hWnd, int nIndex, nint dwNewLong);
+
+    [DllImport(FileName, EntryPoint = "SetWindowLongPtr")]
+    public static extern nint SetWindowLongPtr64(HandleRef hWnd, int nIndex, nint dwNewLong);
+
+    [DllImport(FileName)]
+    public static extern int SetWindowLong(nint hWnd, int nIndex, uint dwNewLong);
+
+}
+
+public enum WindowLongFlags : int
+{
+    GWL_EXSTYLE = -20,
+    GWLP_HINSTANCE = -6,
+    GWLP_HWNDPARENT = -8,
+    GWL_ID = -12,
+    GWL_STYLE = -16,
+    GWL_USERDATA = -21,
+    GWL_WNDPROC = -4,
+    DWLP_USER = 0x8,
+    DWLP_MSGRESULT = 0x0,
+    DWLP_DLGPROC = 0x4
 }

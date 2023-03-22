@@ -22,8 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="System.Diagnostics" />
+    <Using Include="System.Drawing" />
     <Using Include="MathCore.WinAPI" />
     <Using Include="MathCore.WinAPI.Windows" />
+    <Using Include="MathCore.WinAPI.pInvoke" />
   </ItemGroup>
 
 </Project>

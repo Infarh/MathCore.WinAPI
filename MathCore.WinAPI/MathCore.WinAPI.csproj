@@ -13,9 +13,10 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <Version>0.0.3</Version>
+    <Version>0.0.4</Version>
     <PackageReleaseNotes>
       Добавлены методы для взаимодействия с окном: получение класса окна, переключение на окно, проверка видимости окна
+      User32.PrintWindow
     </PackageReleaseNotes>
   </PropertyGroup>
 

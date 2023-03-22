@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -8,6 +9,8 @@ namespace MathCore.WinAPI.Windows;
 
 public class Window
 {
+    public static Window GetForegroundWindow() => new(User32.GetForegroundWindow());
+
     private static void ThrowLastWin32Error() => Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
 
     public static IntPtr SendMessage(IntPtr Handle, WM Message, IntPtr wParam, IntPtr lParam) =>
@@ -212,7 +215,24 @@ public class Window
             : new(screen_handle);
     }
 
+    public Bitmap PrintWindow()
+    {
+        var (width, height) = GetRect(Handle);
+
+        var image = new Bitmap(width, height, PixelFormat.Format32bppPArgb);
+        using var graphic = Graphics.FromImage(image);
+        var graphic_handle = graphic.GetHdc();
+
+        User32.PrintWindow(Handle, graphic_handle, 0);
+
+        graphic.ReleaseHdc(graphic_handle);
+
+        return image;
+    }
+
     public void SwitchToThisWindow(bool IsAltTab = false) => User32.SwitchToThisWindow(Handle, IsAltTab);
+
+    public bool Update() => User32.UpdateWindow(Handle);
 
     /// <summary>Закрыть окно</summary>
     /// <returns>Истина, если окно закрыто успешно</returns>
