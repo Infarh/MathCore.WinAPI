@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MathCore" Version="0.0.86" />
+    <PackageReference Include="MathCore" Version="0.0.86.2" />
     <!--<PackageReference Include="SixLabors.ImageSharp" Version="3.0.0" />-->
   </ItemGroup>
 
